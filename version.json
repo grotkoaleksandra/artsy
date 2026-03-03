@@ -1,9 +1,9 @@
 {
-  "version": "v260302.01 9:21am",
+  "version": "v260303.01 3:56pm",
   "release": 1,
-  "sha": "01db5ae",
-  "fullSha": "01db5ae7c38da6dcb6a88841d0a998e6d11fc787",
+  "sha": "2b656ad",
+  "fullSha": "2b656ad3d7188e3f1f4613030f75421d6da46986",
   "actor": "grotkoaleksandra",
-  "pushedAt": "2026-03-02T15:21:27Z",
-  "commits": []
+  "pushedAt": "2026-03-03T21:56:58Z",
+  "commits": [{"sha": "2b656ad", "message": "Build Artsy curated artist collective site", "author": "MICHAEL KARNOW"}]
 }
