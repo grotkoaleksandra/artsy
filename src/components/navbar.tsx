@@ -2,83 +2,60 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { Dictionary } from "@/i18n/types";
-import { type Locale, INTRANET_LOCALES } from "@/i18n/config";
-import { LanguageSwitcher } from "./language-switcher";
-import { useAuth } from "@/contexts/auth-context";
 import { useState } from "react";
 
-export function Navbar({ dict, lang }: { dict: Dictionary; lang: Locale }) {
+const links = [
+  { href: "/collective", label: "Collective" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
+
+export function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, loading } = useAuth();
-
-  // Intranet only supports EN and BO - fall back to EN for other locales
-  const intranetLang = INTRANET_LOCALES.includes(lang) ? lang : "en";
-
-  // Hide public navbar on intranet pages (intranet has its own header)
-  if (pathname.includes("/intranet")) {
-    return null;
-  }
-
-  const links = [
-    { href: `/${lang}`, label: dict.nav.home },
-    { href: `/${lang}/about`, label: dict.nav.about },
-    { href: `/${lang}/programs`, label: dict.nav.programs },
-    { href: `/${lang}/contact`, label: dict.nav.contact },
-  ];
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-md">
-      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
-        <Link href={`/${lang}`} className="text-xl font-bold">
-          {dict.metadata.title}
-        </Link>
-
-        {/* Desktop nav */}
-        <div className="hidden sm:flex items-center gap-6">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
+      <div className="flex items-center justify-between px-6 h-12 md:h-14">
+        {/* Left: nav links (desktop) */}
+        <div className="hidden md:flex items-center gap-6">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={`text-sm font-medium transition-colors hover:text-amber-600 ${
-                pathname === link.href ? "text-amber-600" : "text-slate-700"
+              className={`text-[13px] tracking-[0.3px] uppercase transition-colors duration-100 ${
+                pathname === link.href
+                  ? "text-blue"
+                  : "text-black hover:text-blue"
               }`}
             >
               {link.label}
             </Link>
           ))}
-          <LanguageSwitcher lang={lang} />
-          {!loading && (
-            user ? (
-              <Link
-                href={`/${intranetLang}/intranet`}
-                className="text-sm font-medium px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors"
-              >
-                {dict.nav.intranet}
-              </Link>
-            ) : (
-              <Link
-                href={`/${intranetLang}/signin`}
-                className="text-sm font-medium px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors"
-              >
-                {dict.nav.signIn}
-              </Link>
-            )
-          )}
         </div>
 
-        {/* Mobile toggle */}
+        {/* Center: serif wordmark */}
+        <Link
+          href="/"
+          className="absolute left-1/2 -translate-x-1/2 font-[family-name:var(--font-playfair)] text-[22px] md:text-[26px] font-normal tracking-[0.5px]"
+        >
+          Artsy
+        </Link>
+
+        {/* Right: placeholder for future icons */}
+        <div className="hidden md:block w-24" />
+
+        {/* Mobile: hamburger */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="sm:hidden p-2 text-slate-700"
+          className="md:hidden p-2 -ml-2"
           aria-label="Toggle menu"
         >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             {menuOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
             )}
           </svg>
         </button>
@@ -86,43 +63,21 @@ export function Navbar({ dict, lang }: { dict: Dictionary; lang: Locale }) {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="sm:hidden border-t border-slate-200 bg-white px-6 py-4 space-y-3">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              className={`block text-sm font-medium ${
-                pathname === link.href ? "text-amber-600" : "text-slate-700"
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <div className="pt-2">
-            <LanguageSwitcher lang={lang} />
+        <div className="md:hidden bg-white border-t border-gray-100 px-6 py-6">
+          <div className="flex flex-col gap-5">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className={`text-[13px] tracking-[0.3px] uppercase ${
+                  pathname === link.href ? "text-blue" : "text-black"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
-          {!loading && (
-            <div className="pt-2">
-              {user ? (
-                <Link
-                  href={`/${intranetLang}/intranet`}
-                  onClick={() => setMenuOpen(false)}
-                  className="block text-sm font-medium text-amber-600"
-                >
-                  {dict.nav.intranet}
-                </Link>
-              ) : (
-                <Link
-                  href={`/${intranetLang}/signin`}
-                  onClick={() => setMenuOpen(false)}
-                  className="block text-sm font-medium text-amber-600"
-                >
-                  {dict.nav.signIn}
-                </Link>
-              )}
-            </div>
-          )}
         </div>
       )}
     </nav>

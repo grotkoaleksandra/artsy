@@ -1,29 +1,38 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import "./globals.css";
 
-const geist = Geist({
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-  variable: "--font-geist",
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
-  title: "AlpacApps",
-  description: "Community management platform",
+  title: "Artsy",
+  description:
+    "A curated database connecting dealers and collectors with exceptional artists.",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en" className={geist.variable}>
-      <head>
-        {/* Add Google Fonts here if your locales need non-Latin scripts */}
-      </head>
-      <body className="min-h-screen flex flex-col antialiased bg-background text-foreground">
-        {children}
+    <html lang="en">
+      <body className={`${inter.variable} ${playfair.variable} antialiased`}>
+        <Navbar />
+        <main>{children}</main>
+        <Footer />
       </body>
     </html>
   );
